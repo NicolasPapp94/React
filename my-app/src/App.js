@@ -3,12 +3,7 @@ import './App.css';
 import videos from '../../my-app/src/video.mp4';
 import firebase from 'firebase';
 var config = {
-  apiKey: "AIzaSyAep3YfWRJBx_9UuaOWMO0G_84roilGw6A",
-  authDomain: "proyectoturnero.firebaseapp.com",
-  databaseURL: "https://proyectoturnero.firebaseio.com",
-  projectId: "proyectoturnero",
-  storageBucket: "proyectoturnero.appspot.com",
-  messagingSenderId: "44044995507"
+ <HERE GOES FIREBASE CONFIG>
 };
 var valores=[];
 var fire = firebase.initializeApp(config);
