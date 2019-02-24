@@ -6,18 +6,20 @@ var config = {
  <HERE GOES FIREBASE CONFIG>
 };
 var valores=[];
+var valores_nuevo=[];
 var fire = firebase.initializeApp(config);
 class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      datos: []
+      datos: [],
+      nuevo_registro:true,
+      datos_nuevo: []
     };
-  }
-
-  componentDidMount(){
+    var ref = firebase.database().ref();
     var ref = firebase.database().ref().limitToLast(3);
-      ref.once('value', function(snapshot) {
+      ref.on('value', function(snapshot) {
+      var valores=[];
       snapshot.forEach(function(childSnapshot) {
         var childData = childSnapshot.val();
         valores.push(childData);
@@ -27,17 +29,37 @@ class App extends Component {
       })
     }.bind(this));
 
+
+    var ref = firebase.database().ref().limitToLast(1);
+    ref.on('value', function(snapshot) {
+      this.setState({
+        nuevo_registro:true,
+        datos_nuevo: []
+      });
+      valores_nuevo=[];
+      snapshot.forEach(function(childSnapshot) {
+        var childData = childSnapshot.val();
+        console.log(childData);
+        valores_nuevo.push(childData);
+        this.setState({
+          datos_nuevo: valores_nuevo
+        });
+        setTimeout(
+          function() {
+            this.setState({
+              nuevo_registro:false
+            });
+          }.bind(this),3000);
+      }.bind(this));
+    }.bind(this));
+
+
+
   }
 
 
-
-
-
-
-
-
   render() {
-    console.log(this.state);
+    if (!this.state.nuevo_registro){
     return (
       <div className="App">
           <div className="container-fluid">
@@ -52,10 +74,10 @@ class App extends Component {
                         {
                         this.state.datos.map((dato,index) =>
                         <div className="col-sm-4 ContenedorPersona" key={index}>
-                          <h2>{dato.nombre}</h2>
-                          <h2>{dato.apellido}</h2>
+                          <h1>{dato.nombre}</h1>
+                          <h1>{dato.apellido}</h1>
                           <div className="LugarTurno">  
-                            <h4> Dirigirse a: </h4>
+                            <h3> Dirigirse a: </h3>
                             <h2> {dato.sala} </h2>
                           </div>
                         </div>
@@ -67,6 +89,24 @@ class App extends Component {
           </div>
       </div>
     );
+  } else {
+    return (
+    <div className="App">
+      {
+        this.state.datos_nuevo.map((dato,index) =>
+        <div className="ContenedorDatos" key={index}>
+              <div className="DatosNuevos">                
+                <h1>{dato.nombre} {dato.apellido}</h1>
+                <h3> Dirigirse a: </h3>
+                <h2> {dato.sala} </h2>
+              </div>
+
+        </div>
+        )
+      }  
+    </div>
+    );
+  }
   }
 }
 
